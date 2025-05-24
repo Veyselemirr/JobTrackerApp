@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JobTrackerApp.Domain.Entities;
 
 namespace JobTrackerApp.Application.Interfaces
 {
-    internal class IUserService
+    public interface IJobApplicationService
     {
+        Task<JobApplication?> GetByIdAsync(int id);  
+        Task<IEnumerable<JobApplication>> GetAllByUserAsync(int userId); 
+        Task<JobApplication> CreateAsync(JobApplication application);    
+        Task<JobApplication> UpdateAsync(JobApplication application);    
+        Task<bool> DeleteAsync(int id);                                 
     }
 }
