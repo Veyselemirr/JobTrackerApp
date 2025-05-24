@@ -1,4 +1,6 @@
+using JobTrackerApp.Application.Interfaces;
 using JobTrackerApp.Infrastructure.Data;
+using JobTrackerApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,9 @@ builder.Services.AddSwaggerGen();
 // ApplicationDbContext'i dependency injection sistemine dahil ediyoruz
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IJobApplicationService,JobApplicationService>();
 
 var app = builder.Build();
 
