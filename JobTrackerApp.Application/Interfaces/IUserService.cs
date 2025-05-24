@@ -1,12 +1,13 @@
-﻿using JobTrackerApp.Domain.Entities;
+﻿using JobTrackerApp.Application.Common.Results;
+using JobTrackerApp.Domain.Entities;
 
-namespace JobTrackerApp.Application.Interfaces
+namespace JobTrackerApp.Application.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<User?> GetByIdAsync(int id);    
-        Task<IEnumerable<User>> GetAllAsync(); 
-        Task<User> CreateAsync(User user);  
-        Task<User> UpdateAsync(User user);  
-        Task<bool> DeleteAsync(int id);    
+    Task<ServiceResult<User>> GetByIdAsync(int id);
+    Task<ServiceResult<IEnumerable<User>>> GetAllAsync();
+    Task<ServiceResult<User>> CreateAsync(User user);
+    Task<ServiceResult<User>> UpdateAsync(User user);
+    Task<ServiceResult> DeleteAsync(int id);
 }

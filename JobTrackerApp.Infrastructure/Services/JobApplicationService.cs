@@ -1,7 +1,9 @@
-﻿using JobTrackerApp.Application.Interfaces;
+﻿using JobTrackerApp.Application.Common.Results;
+using JobTrackerApp.Application.Interfaces;
 using JobTrackerApp.Domain.Entities;
 using JobTrackerApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace JobTrackerApp.Infrastructure.Services
 {
@@ -9,51 +11,71 @@ namespace JobTrackerApp.Infrastructure.Services
     {
         private readonly ApplicationDbContext _context;
 
-        // Constructor ile DbContext enjekte ediliyor (DI)
         public JobApplicationService(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // Başvuru detayını getir
-        public async Task<JobApplication?> GetByIdAsync(int id)
+        // ID ile başvuru getir
+        public async Task<ServiceResult<JobApplication>> GetByIdAsync(int id)
         {
-            return await _context.JobApplications.FindAsync(id);
+            var app = await _context.JobApplications.FindAsync(id);
+            if (app == null)
+                return ServiceResult<JobApplication>.Fail("Başvuru bulunamadı", HttpStatusCode.NotFound);
+
+            return ServiceResult<JobApplication>.Success(app);
         }
 
         // Kullanıcıya ait başvuruları getir
-        public async Task<IEnumerable<JobApplication>> GetAllByUserAsync(int userId)
+        public async Task<ServiceResult<IEnumerable<JobApplication>>> GetAllByUserAsync(int userId)
         {
-            return await _context.JobApplications
+            var apps = await _context.JobApplications
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
+
+            return ServiceResult<IEnumerable<JobApplication>>.Success(apps);
         }
 
         // Yeni başvuru oluştur
-        public async Task<JobApplication> CreateAsync(JobApplication application)
+        public async Task<ServiceResult<JobApplication>> CreateAsync(JobApplication application)
         {
-            _context.JobApplications.Add(application);
+            await _context.JobApplications.AddAsync(application);
             await _context.SaveChangesAsync();
-            return application;
+
+            return ServiceResult<JobApplication>.Success(application, HttpStatusCode.Created);
         }
 
-        // Başvuruyu güncelle
-        public async Task<JobApplication> UpdateAsync(JobApplication application)
+        // Başvuru güncelle
+        public async Task<ServiceResult<JobApplication>> UpdateAsync(JobApplication application)
         {
-            _context.JobApplications.Update(application);
+            var existing = await _context.JobApplications.FindAsync(application.Id);
+            if (existing == null)
+                return ServiceResult<JobApplication>.Fail("Güncellenecek başvuru bulunamadı", HttpStatusCode.NotFound);
+
+            // Güncellenecek alanlar
+            existing.CompanyName = application.CompanyName;
+            existing.Position = application.Position;
+            existing.AppliedDate = application.AppliedDate;
+            existing.Status = application.Status;
+            existing.Notes = application.Notes;
+
+            _context.JobApplications.Update(existing);
             await _context.SaveChangesAsync();
-            return application;
+
+            return ServiceResult<JobApplication>.Success(existing);
         }
 
-        // Başvuruyu sil
-        public async Task<bool> DeleteAsync(int id)
+        // Başvuru sil
+        public async Task<ServiceResult> DeleteAsync(int id)
         {
             var app = await _context.JobApplications.FindAsync(id);
-            if (app == null) return false;
+            if (app == null)
+                return ServiceResult.Fail("Silinecek başvuru bulunamadı", HttpStatusCode.NotFound);
 
             _context.JobApplications.Remove(app);
             await _context.SaveChangesAsync();
-            return true;
+
+            return ServiceResult.Success(HttpStatusCode.NoContent);
         }
     }
 }
