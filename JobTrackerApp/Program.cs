@@ -5,19 +5,36 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS için politika adý
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 // Add services to the container.
 
+// 1. CORS servisini ekle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000") // Next.js uygulamanýn adresi
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                          // Eðer farklý portlarda veya production'da baþka adreslere de izin vermek istersen:
+                          // policy.WithOrigins("http://localhost:3000", "https://senin-production-adresin.com")
+                          // Eðer tüm origin'lere (kaynaklara) izin vermek istersen (geliþtirme için olabilir ama production'da dikkatli ol):
+                          // policy.AllowAnyOrigin()
+                      });
+});
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ApplicationDbContext'i dependency injection sistemine dahil ediyoruz
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddScoped<IJobApplicationService,JobApplicationService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJobApplicationService, JobApplicationService>();
 
 var app = builder.Build();
 
@@ -29,6 +46,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 

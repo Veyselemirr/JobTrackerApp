@@ -57,7 +57,9 @@ public async Task<IActionResult> Create(JobApplicationCreateDto dto)
         AppliedDate = dto.AppliedDate,
         Status = (ApplicationStatus)dto.Status,
         Notes = dto.Notes,
-        UserId = dto.UserId
+        UserId = dto.UserId,
+        Location = dto.Location,
+        WorkModel = dto.WorkModel
     };
 
     var result = await _jobService.CreateAsync(application);
@@ -79,7 +81,7 @@ public async Task<IActionResult> Create(JobApplicationCreateDto dto)
                 AppliedDate = dto.AppliedDate,
                 Status = (ApplicationStatus)dto.Status,
                 Notes = dto.Notes,
-                UserId = dto.UserId
+                UserId = dto.UserId,
             };
 
             var result = await _jobService.UpdateAsync(application);
