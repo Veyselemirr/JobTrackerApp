@@ -82,6 +82,8 @@ public async Task<IActionResult> Create(JobApplicationCreateDto dto)
                 Status = (ApplicationStatus)dto.Status,
                 Notes = dto.Notes,
                 UserId = dto.UserId,
+                Location = dto.Location,
+                WorkModel = dto.WorkModel
             };
 
             var result = await _jobService.UpdateAsync(application);
