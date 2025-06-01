@@ -9,4 +9,6 @@
     public int UserId { get; set; }
     public string? Location { get; set; }
     public string? WorkModel { get; set; }
+    public DateTime? InterviewDate { get; set; }
+
 }

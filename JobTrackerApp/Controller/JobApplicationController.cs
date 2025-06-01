@@ -48,6 +48,7 @@ namespace JobTrackerApp.Controllers
         }
 
         [HttpPost]
+
 public async Task<IActionResult> Create(JobApplicationCreateDto dto)
 {
     var application = new JobApplication
@@ -59,7 +60,8 @@ public async Task<IActionResult> Create(JobApplicationCreateDto dto)
         Notes = dto.Notes,
         UserId = dto.UserId,
         Location = dto.Location,
-        WorkModel = dto.WorkModel
+        WorkModel = dto.WorkModel,
+        InterviewDate = dto.InterviewDate,       
     };
 
     var result = await _jobService.CreateAsync(application);
@@ -83,7 +85,8 @@ public async Task<IActionResult> Create(JobApplicationCreateDto dto)
                 Notes = dto.Notes,
                 UserId = dto.UserId,
                 Location = dto.Location,
-                WorkModel = dto.WorkModel
+                WorkModel = dto.WorkModel,
+                InterviewDate= dto.InterviewDate,
             };
 
             var result = await _jobService.UpdateAsync(application);
