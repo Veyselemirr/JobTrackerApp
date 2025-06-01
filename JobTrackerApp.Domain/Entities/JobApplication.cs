@@ -12,7 +12,8 @@ namespace JobTrackerApp.Domain.Entities
         public string? Location { get; set; }
         public string? WorkModel { get; set; }
         public string? Notes { get; set; } 
-        public int UserId { get; set; }  
+        public int UserId { get; set; }
+        public DateTime? InterviewDate { get; set; }
         public User User { get; set; } = null!; 
     }
 }

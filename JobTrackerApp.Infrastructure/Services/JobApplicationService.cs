@@ -58,6 +58,9 @@ namespace JobTrackerApp.Infrastructure.Services
             existing.AppliedDate = application.AppliedDate;
             existing.Status = application.Status;
             existing.Notes = application.Notes;
+            existing.WorkModel=application.WorkModel;
+            existing.Location = application.Location;
+            existing.InterviewDate = application.InterviewDate;
 
             _context.JobApplications.Update(existing);
             await _context.SaveChangesAsync();

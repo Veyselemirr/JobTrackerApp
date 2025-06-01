@@ -7,4 +7,8 @@
     public int Status { get; set; }
     public string? Notes { get; set; }
     public int UserId { get; set; }
+    public string? Location { get; set; }
+    public string? WorkModel { get; set; }
+    public DateTime? InterviewDate { get; set; }
+
 }
